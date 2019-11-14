@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 def main():
     data = np.loadtxt(sys.argv[1])
     points = data[:,: -int(sys.argv[2])]
-    probabilities = data[:,[2,3]]
+    probabilities = data[:,[2,3,4]]
     print(probabilities)
     colors=["#0000FF", "#00FF00", "#FF0066"]
     fig = plt.figure()

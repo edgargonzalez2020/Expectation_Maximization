@@ -1,3 +1,5 @@
+# Edgar Gonzalez
+# 1001336686
 import sys
 import random
 import numpy as np
@@ -18,20 +20,22 @@ class EmCluster:
         for i in range(1,self.iterations + 1):
             means, weights, covariances = self.m_step()
             self.e_step(means, weights, covariances)
-        with open("points.txt", "w") as f:
-            for i,x in enumerate(self.factory.data):
-                f.write(f"{x[0]} {x[1]}")
-                for j in range(self.number_of_clusters):
-                    f.write(f" {self.prob[i][j]}")
-                f.write("\n")
-        #    print(f"After iteration {i}: ")
-        #    count = 1
-        #    for y in range(self.number_of_clusters):
-        #        print(f"weight {count} = {weights[y]:.4f}, mean = {means[y-1]}")
-        #        count += 1
-        #print("After final iteration")
+            print(f"After iteration {i}: ")
+            count = 1
+            for y in range(self.number_of_clusters):
+                inner = ",".join(str(np.around(x, decimals=4)) for x in means[y])
+                print(f"weight {count} = {weights[y]:.4f}, mean = ({inner})")
+                count += 1
+        print("After final iteration")
+        count = 1
+        for i in range(self.number_of_clusters):
+            inner = ",".join(str(np.around(x, decimals=4)) for x in means[i])
+            print(f"weight {count} = {weights[i]:.4f}, mean {i} = ({inner})")
+            for j,y in enumerate(covariances[i],start=1):
+                matrix = ",".join([str(np.around(x,decimals=4)) for x in y])
+                print(f"Sigma {count} row {j} = ({matrix})")
+            count += 1
     def e_step(self, means, weights, covariances):
-        print(np.array(covariances)[0].shape)
         bottom = []
         probabilities = []
         for x in self.factory.data:
@@ -45,14 +49,7 @@ class EmCluster:
             prob_j = [x/total for x in prob_j]
             probabilities.extend([prob_j])
         self.prob = probabilities
-
-        #for cluster in range(self.number_of_clusters):
-        #    for i,x in enumerate(self.factory.data):
-        #        gaussian_term = self.multivariate_gaussian(x,np.array(means[cluster]),np.array(covariances[cluster]))
-        #        upper = gaussian_term * weights[cluster]
-        #        probabilities[i][cluster] = upper
         for i in range(len(probabilities)):
-            print(probabilities[i])
             total = sum(probabilities[i])
             for j in range(len(probabilities[i])):
                 probabilities[i][j] /= total
